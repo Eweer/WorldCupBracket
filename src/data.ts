@@ -24,14 +24,8 @@ export interface MatchDef {
 }
 
 export interface BracketSubmitPayload {
-  /** Every confirmed pick: matchId → winner name. */
+  urlKey: string;
   winners: Record<number, string>;
-  /** Predicted finalists if both semi-finals are picked. */
-  finalists: [string, string] | null;
-  /** Predicted champion if the Final is picked. */
-  champion: string | null;
-  /** Predicted third-place winner. */
-  thirdPlace: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -177,6 +171,8 @@ export const I18N = {
     legend: '<span style="color:#4ade80">▶</span> = predicted winner · green highlight = pick confirmed',
     toggleLang: "Español",
     swapTo: "Cambiar idioma a ",
+    submitSuccess: "Winners sent successfully :) Good luck!",
+    submitFailure: "ERROR: Could not send winners, try again in a few seconds. If the issue persists, please contact an admin.",
   },
   es_ES: {
     eyebrow: "FIFA",
@@ -194,6 +190,8 @@ export const I18N = {
     reset: "Reiniciar selecciones",
     legend: '<span style="color:#4ade80">▶</span> = ganador predicho · verde = selección confirmada',
     toggleLang: "English",
-    swapTo: "Swap language to "
+    swapTo: "Swap language to ",
+    submitSuccess: "Selecciones enviadas correctamente :) ¡Buena suerte!",
+    submitFailure: "ERROR: No se pudo enviar las selecciones, inténtalo de nuevo en unos segundos. Si el problema persiste, contacta con un administrador.",
   },
 } as const;

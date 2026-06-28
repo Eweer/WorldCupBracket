@@ -42,12 +42,8 @@ function getTeams(
 }
 
 function buildPayload(winners: Record<number, string>): BracketSubmitPayload {
-  return {
-    winners,
-    finalists: null,
-    champion: winners[FINAL.id] ?? null,
-    thirdPlace: winners[THIRD.id] ?? null,
-  };
+  const urlKey = window.location.pathname.split("/").filter(Boolean).pop() ?? ""
+  return { urlKey, winners };
 }
 
 // ---------------------------------------------------------------------------
@@ -57,7 +53,7 @@ function buildPayload(winners: Record<number, string>): BracketSubmitPayload {
 let winners: Record<number, string> = {};
 let selected: number | null = null;
 let onSubmitCallback: ((payload: BracketSubmitPayload) => void) | null = null;
-let lang: "en_US" | "es_ES" = "en_US"
+export let lang: "en_US" | "es_ES" = "en_US"
 
 // ---------------------------------------------------------------------------
 // DOM helpers

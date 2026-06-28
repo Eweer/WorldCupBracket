@@ -1,22 +1,26 @@
-import { mountBracket } from "./bracket.js";
-import type { BracketSubmitPayload } from "./data.js";
+import { mountBracket, lang } from "./bracket.js";
+import { I18N, type BracketSubmitPayload } from "./data.js";
+
+const WORKER_URL = "https://broad-surf-ce0e.eweer.workers.dev"
 
 const app = document.getElementById("app");
-if (!app) throw new Error("#app element not found");
+if (!app) {
+  throw new Error("#app element not found");
+}
 
-mountBracket(app, (payload: BracketSubmitPayload) => {
-  // ── Replace this with your own submission logic ──────────────────────────
-  //
-  // payload.winners     → Record<number, string>  (matchId → winner name)
-  // payload.finalists   → [string, string] | null
-  // payload.champion    → string | null
-  // payload.thirdPlace  → string | null
-  //
-  // Examples:
-  //   fetch("/api/predictions", { method: "POST", body: JSON.stringify(payload) })
-  //   localStorage.setItem("picks", JSON.stringify(payload))
-  //   googleSheetsSubmit(payload)
-  //
+mountBracket(app, async (payload: BracketSubmitPayload) => {
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+      mode: "no-cors",
+      redirect: "follow"
+    });
+    alert(I18N[lang].submitSuccess);
+  } catch (err) {
+    alert(I18N[lang].submitFailure)
+    console.log(err)
+  }
   console.log("Bracket submitted:", payload);
-  alert(`Champion pick: ${payload.champion ?? "none yet"}`);
 });
