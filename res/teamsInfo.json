@@ -1,0 +1,194 @@
+{
+    "MEX": {
+        "en_US": "Mexico",
+        "es_ES": "México"
+    },
+    "RSA": {
+        "en_US": "South Africa",
+        "es_ES": "Sudáfrica"
+    },
+    "KOR": {
+        "en_US": "Korea Republic",
+        "es_ES": "República de Corea"
+    },
+    "CZE": {
+        "en_US": "Czechia",
+        "es_ES": "Chequia"
+    },
+    "SUI": {
+        "en_US": "Switzerland",
+        "es_ES": "Suiza"
+    },
+    "CAN": {
+        "en_US": "Canada",
+        "es_ES": "Canadá"
+    },
+    "BIH": {
+        "en_US": "Bosnia and Herzegovina",
+        "es_ES": "Bosnia y Herzegovina"
+    },
+    "QAT": {
+        "en_US": "Qatar",
+        "es_ES": "Catar"
+    },
+    "BRA": {
+        "en_US": "Brazil",
+        "es_ES": "Brasil"
+    },
+    "MAR": {
+        "en_US": "Morocco",
+        "es_ES": "Marruecos"
+    },
+    "SCO": {
+        "en_US": "Scotland",
+        "es_ES": "Escocia"
+    },
+    "HAI": {
+        "en_US": "Haiti",
+        "es_ES": "Haití"
+    },
+    "USA": {
+        "en_US": "United States",
+        "es_ES": "Estados Unidos"
+    },
+    "AUS": {
+        "en_US": "Australia",
+        "es_ES": "Australia"
+    },
+    "PAR": {
+        "en_US": "Paraguay",
+        "es_ES": "Paraguay"
+    },
+    "TUR": {
+        "en_US": "Türkiye",
+        "es_ES": "Turquía"
+    },
+    "GER": {
+        "en_US": "Germany",
+        "es_ES": "Alemania"
+    },
+    "CIV": {
+        "en_US": "Côte d'Ivoire",
+        "es_ES": "Costa de Marfil"
+    },
+    "ECU": {
+        "en_US": "Ecuador",
+        "es_ES": "Ecuador"
+    },
+    "CUW": {
+        "en_US": "Curaçao",
+        "es_ES": "Curazao"
+    },
+    "NED": {
+        "en_US": "Netherlands",
+        "es_ES": "Países Bajos"
+    },
+    "JPN": {
+        "en_US": "Japan",
+        "es_ES": "Japón"
+    },
+    "SWE": {
+        "en_US": "Sweden",
+        "es_ES": "Suecia"
+    },
+    "TUN": {
+        "en_US": "Tunisia",
+        "es_ES": "Túnez"
+    },
+    "BEL": {
+        "en_US": "Belgium",
+        "es_ES": "Bélgica"
+    },
+    "EGY": {
+        "en_US": "Egypt",
+        "es_ES": "Egipto"
+    },
+    "IRN": {
+        "en_US": "IR Iran",
+        "es_ES": "RI de Irán"
+    },
+    "NZL": {
+        "en_US": "New Zealand",
+        "es_ES": "Nueva Zelanda"
+    },
+    "ESP": {
+        "en_US": "Spain",
+        "es_ES": "España"
+    },
+    "CPV": {
+        "en_US": "Cabo Verde",
+        "es_ES": "Islas de Cabo Verde"
+    },
+    "URU": {
+        "en_US": "Uruguay",
+        "es_ES": "Uruguay"
+    },
+    "KSA": {
+        "en_US": "Saudi Arabia",
+        "es_ES": "Arabia Saudí"
+    },
+    "FRA": {
+        "en_US": "France",
+        "es_ES": "Francia"
+    },
+    "NOR": {
+        "en_US": "Norway",
+        "es_ES": "Noruega"
+    },
+    "SEN": {
+        "en_US": "Senegal",
+        "es_ES": "Senegal"
+    },
+    "IRQ": {
+        "en_US": "Iraq",
+        "es_ES": "Irak"
+    },
+    "ARG": {
+        "en_US": "Argentina",
+        "es_ES": "Argentina"
+    },
+    "AUT": {
+        "en_US": "Austria",
+        "es_ES": "Austria"
+    },
+    "ALG": {
+        "en_US": "Algeria",
+        "es_ES": "Argelia"
+    },
+    "JOR": {
+        "en_US": "Jordan",
+        "es_ES": "Jordania"
+    },
+    "COL": {
+        "en_US": "Colombia",
+        "es_ES": "Colombia"
+    },
+    "POR": {
+        "en_US": "Portugal",
+        "es_ES": "Portugal"
+    },
+    "COD": {
+        "en_US": "Congo DR",
+        "es_ES": "RD Congo"
+    },
+    "UZB": {
+        "en_US": "Uzbekistan",
+        "es_ES": "Uzbekistán"
+    },
+    "ENG": {
+        "en_US": "England",
+        "es_ES": "Inglaterra"
+    },
+    "CRO": {
+        "en_US": "Croatia",
+        "es_ES": "Croacia"
+    },
+    "GHA": {
+        "en_US": "Ghana",
+        "es_ES": "Ghana"
+    },
+    "PAN": {
+        "en_US": "Panama",
+        "es_ES": "Panamá"
+    }
+}
