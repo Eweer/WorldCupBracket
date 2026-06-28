@@ -705,10 +705,13 @@ function renderDesktop(root: HTMLElement): void {
 function render(): void {
   const root = document.getElementById("bracket-root");
   if (!root) return;
+
+  const scrollY = window.scrollY;
   root.innerHTML = "";
 
   if (isMobile()) {
     renderMobile(root);
+    window.scrollTo({ top: scrollY, behavior: "instant" });
   } else {
     renderDesktop(root);
   }
