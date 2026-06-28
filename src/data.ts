@@ -77,7 +77,7 @@ const R16_SORT_ORDER: number[] = [
 ];
 
 // Round of 8
-export const R8: MatchDef[] = [
+const R8: MatchDef[] = [
   { id: 89, src: [74, 77], label: "R8" },
   { id: 90, src: [73, 75], label: "R8" },
   { id: 91, src: [76, 78], label: "R8" },
@@ -93,7 +93,7 @@ const R8_SORT_ORDER: number[] = [
 ];
 
 // Round of 4 (Quarter-finals)
-export const R4: MatchDef[] = [
+const R4: MatchDef[] = [
   { id: 97, src: [89, 90], label: "R4" },
   { id: 98, src: [93, 94], label: "R4" },
   { id: 99, src: [91, 92], label: "R4" },
@@ -104,7 +104,7 @@ const R4_SORT_ORDER: number[] = [
   97, 98, 99, 100
 ];
 
-export const SF: MatchDef[] = [
+const SF: MatchDef[] = [
   { id: 101, src: [97, 98], label: "SF" },
   { id: 102, src: [99, 100], label: "SF" },
 ];
@@ -113,7 +113,7 @@ const SF_SORT_ORDER: number[] = [
   101, 102
 ];
 
-export const FINAL: MatchDef = { id: 103, src: [101, 102], label: "FINAL" };
+const FINAL: MatchDef = { id: 103, src: [101, 102], label: "FINAL" };
 export const THIRD: MatchDef = { id: 104, src: [101, 102], label: "3RD" };
 
 export const ALL_MATCHES: MatchDef[] = [...R16, ...R8, ...R4, ...SF, FINAL, THIRD];
@@ -136,28 +136,37 @@ const R16_SORTED: MatchDef[] = order_to_sorted(R16, R16_SORT_ORDER);
 const R8_SORTED: MatchDef[] = order_to_sorted(R8, R8_SORT_ORDER);
 const R4_SORTED: MatchDef[] = order_to_sorted(R4, R4_SORT_ORDER);
 const SF_SORTED: MatchDef[] = order_to_sorted(SF, SF_SORT_ORDER);
-export const COLUMNS: MatchDef[][] = [
+export const MAPPED_MATCHES: MatchDef[][] = [
   R16_SORTED.slice(0, 8),   // col 0 – left  R16 top
   R8_SORTED.slice(0, 4),    // col 1 – left  R8
   R4_SORTED.slice(0, 2),    // col 2 – left  R4
   SF_SORTED.slice(0, 1),    // col 3 – left  SF
-  [FINAL],           // col 4 – Final
+  [FINAL, THIRD],           // col 4 – Final
   SF_SORTED.slice(1, 2),    // col 5 – right SF
   R4_SORTED.slice(2, 4),    // col 6 – right R4
   R8_SORTED.slice(4, 8),    // col 7 – right R8
   R16_SORTED.slice(8, 16),  // col 8 – right R16 top
 ];
 // Extra vertical padding per column index so matches fan out symmetrically
-export const COL_VPAD: number[] = [6, 18, 52, 120, 8, 120, 52, 18, 6];
+export const COL_VPAD: number[] = [
+  6,    // col 0 – left  R16
+  18,   // col 1 – left  R8
+  52,   // col 2 – left  R4
+  120,  // col 3 – left  SF
+  16,    // col 4 – Final
+  120,  // col 5 – right SF
+  52,   // col 6 – right R4
+  18,   // col 7 – right R8
+  6     // col 8 – right R16
+];
 
-// Total pickable matches: R16(16) + R8(8) + R4(4) + SF(2) + Final(1) + 3rd(1) = 32
-export const TOTAL_PICKS = 32;
+export const TOTAL_PICKS = ALL_MATCHES.length;
 
 export const I18N = {
   en_US: {
     eyebrow: "FIFA",
     title: "World Cup Bracket",
-    subtitle: (picks: number, total: number) => `Click the winner team for each match · ${picks}/${total} picks made`,
+    subtitle: `Click the winner team for each match`,
     matchNumber: (id: number) => `Match ${id}`,
     thirdPlace: "3rd Place Match",
     final: "⚽ Final",
@@ -173,11 +182,12 @@ export const I18N = {
     swapTo: "Cambiar idioma a ",
     submitSuccess: "Winners sent successfully :) Good luck!",
     submitFailure: "ERROR: Could not send winners, try again in a few seconds. If the issue persists, please contact an admin.",
+    picksMade: (picks: number, total: number) => `${picks}/${total} picks made`,
   },
   es_ES: {
     eyebrow: "FIFA",
     title: "Bracket del Mundial",
-    subtitle: (picks: number, total: number) => `Haz clic en el equipo ganador de cada partido· ${picks}/${total} selecciones`,
+    subtitle: `Haz clic en el equipo ganador de cada partido`,
     matchNumber: (id: number) => `Partido ${id}`,
     thirdPlace: "Partido por el 3er puesto",
     final: "⚽ Final",
@@ -193,5 +203,6 @@ export const I18N = {
     swapTo: "Swap language to ",
     submitSuccess: "Selecciones enviadas correctamente :) ¡Buena suerte!",
     submitFailure: "ERROR: No se pudo enviar las selecciones, inténtalo de nuevo en unos segundos. Si el problema persiste, contacta con un administrador.",
+    picksMade: (picks: number, total: number) => `${picks}/${total} selecciones`,
   },
 } as const;

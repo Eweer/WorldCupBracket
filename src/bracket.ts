@@ -2,8 +2,7 @@ import {
   ALL_MATCHES,
   BracketSubmitPayload,
   COL_VPAD,
-  COLUMNS,
-  FINAL,
+  MAPPED_MATCHES,
   MatchDef,
   R16_TEAMS,
   teamData,
@@ -113,8 +112,8 @@ function renderCard(match: MatchDef): HTMLElement {
     borderRadius: "8px",
     padding: "6px 10px",
     cursor: "pointer",
-    minWidth: "170px",
-    maxWidth: "200px",
+    minWidth: "180px",
+    maxWidth: "180px",
     boxShadow: isHighlighted ? "0 0 12px #4ade8044" : "none",
     transition: "border-color 0.2s, box-shadow 0.2s",
     boxSizing: "border-box",
@@ -146,7 +145,7 @@ function renderCard(match: MatchDef): HTMLElement {
       borderRadius: "4px",
       padding: "3px 6px",
       cursor: "pointer",
-      fontSize: "11px",
+      fontSize: "12px",
       width: "100%",
       textAlign: "left",
       marginTop: "2px",
@@ -161,9 +160,38 @@ function renderCard(match: MatchDef): HTMLElement {
     row.addEventListener("click", (e) => {
       if (isPlaceholder(teamA) || isPlaceholder(teamB))
         return;
+      const deleteWinners = (team: string, matchId: number): void => {
+        let toDelete: number[] = [];
+        for (const keyStr in winners) {
+          const key = Number(keyStr);
+          if (key >= matchId && winners[key] == team) {
+            toDelete.push(key);
+          }
+        }
+        toDelete.forEach(k => delete winners[k]);
+      };
       e.stopPropagation();
-      winners[match.id] = team;
-      selected = null;
+      if (match.id in winners) {
+        const oldWinner = winners[match.id]!;
+        deleteWinners(oldWinner, match.id);
+        if (oldWinner == team) {
+          selected = null;
+        } else {
+          winners[match.id] = team;
+        }
+        const toDelete: number[] = [];
+        for (const key in winners) {
+          const id = Number(key);
+          const [tA, tB] = getTeams(id, winners);
+          if (isPlaceholder(tA) || isPlaceholder(tB)) {
+            toDelete.push(id);
+          }
+        }
+        toDelete.forEach(k => delete winners[k]);
+      } else {
+        winners[match.id] = team;
+        selected = null;
+      }
       render();
     });
 
@@ -173,6 +201,20 @@ function renderCard(match: MatchDef): HTMLElement {
       row.appendChild(arrow);
     }
     row.appendChild(text(team));
+    if (!isPlaceholder(team)) {
+      const flagImg = el("img",
+        {
+          width: "24px",
+          height: "auto",
+          display: "block",
+          marginLeft: "auto",
+          border: "1px solid rgba(255,255,255,0.4)",
+          borderRadius: "2px",
+        },
+        { src: `flags/${team}.png`, alt: teamData[team]![lang] }
+      );
+      row.appendChild(flagImg);
+    }
     card.appendChild(row);
   }
 
@@ -244,81 +286,74 @@ function render(): void {
   header.appendChild(h1);
 
   const sub = el("p", { fontSize: "12px", color: "#4b7a4b", marginTop: "6px" });
-  sub.appendChild(text(I18N[lang].subtitle(picksCount, TOTAL_PICKS)));
+  sub.appendChild(text(I18N[lang].subtitle));
   header.appendChild(sub);
 
   root.appendChild(header);
-
-  // ── 3rd Place ────────────────────────────────────────────────────────────
-  const thirdSection = el("div", { textAlign: "center", marginBottom: "20px" });
-  const thirdLabel = el("div", {
-    fontSize: "10px",
-    color: "#94a3b8",
-    letterSpacing: "2px",
-    marginBottom: "8px",
-    textTransform: "uppercase",
-  });
-  thirdLabel.appendChild(text(I18N[lang].thirdPlace));
-  thirdSection.appendChild(thirdLabel);
-
-  const thirdWrap = el("div", { display: "inline-block" });
-  thirdWrap.appendChild(renderCard(THIRD));
-  thirdSection.appendChild(thirdWrap);
-  root.appendChild(thirdSection);
 
   // ── Main bracket ─────────────────────────────────────────────────────────
   const scrollWrap = el("div", { overflowX: "auto", paddingBottom: "8px" });
   const bracketRow = el("div", {
     display: "flex",
     alignItems: "stretch",
-    minWidth: "1280px",
+    minWidth: "800px",
     justifyContent: "center",
   });
 
   const COLUMN_LABELS = get_column_labels()
-  COLUMNS.forEach((colMatches, ci) => {
-    const col = el("div", {
+  MAPPED_MATCHES.forEach((matchColumn, index) => {
+    const column = el("div", {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
       padding: "0 4px",
+      justifyContent: "center",
     });
 
     // Column label
-    const colLabel = el("div", {
-      fontSize: "9px",
+    const columnHeader = el("div", {
+      fontSize: "12px",
       letterSpacing: "2px",
-      color: "#4ade80",
+      color: "#0baf47",
       textTransform: "uppercase",
       marginBottom: "12px",
-      fontWeight: "700",
-      opacity: ci === 0 || ci === 6 ? "1" : ci === 3 ? "0.6" : "0.8",
+      fontWeight: "900",
     });
 
-    colLabel.appendChild(text(COLUMN_LABELS[ci]!));
-    col.appendChild(colLabel);
+    if (index === 4) {
+      column.style.position = "relative";
+      columnHeader.style.position = "absolute";
+      columnHeader.style.top = "0";
+    }
+
+    columnHeader.appendChild(text(COLUMN_LABELS[index]!));
+    column.appendChild(columnHeader);
 
     // Matches
-    const matchCol = el("div", {
+    const matchesInColumn = el("div", {
       display: "flex",
+      alignItems: "center",
       flexDirection: "column",
-      flex: "1",
-      justifyContent: "space-around",
-      gap: ci === 3 ? "16px" : "0",
+      ...(index !== 4 ? { flex: "1" } : { marginTop: "124px" }),
     });
 
-    for (const m of colMatches) {
-      const vpad = COL_VPAD[ci] ?? 12;
+    for (let i = 0; i < matchColumn.length; i++) {
+      const match = matchColumn[i]!;
+      const vpad = COL_VPAD[index] ?? 12;
       const wrap = el("div", {
         margin: "auto 0",
         padding: `${vpad}px 0`,
       });
-      wrap.appendChild(renderCard(m));
-      matchCol.appendChild(wrap);
+      wrap.appendChild(renderCard(match));
+      matchesInColumn.appendChild(wrap);
+
+      if (i % 2 === 1 && i < matchColumn.length - 1) {
+        matchesInColumn.appendChild(el("div", { height: "12px" }));
+      }
     }
 
-    col.appendChild(matchCol);
-    bracketRow.appendChild(col);
+    column.appendChild(matchesInColumn);
+    bracketRow.appendChild(column);
   });
 
   scrollWrap.appendChild(bracketRow);
@@ -327,20 +362,25 @@ function render(): void {
   // ── Footer ───────────────────────────────────────────────────────────────
   const footer = el("div", {
     textAlign: "center",
-    marginTop: "32px",
+    marginTop: "0px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     gap: "12px",
   });
 
+  const picks = el("p", { fontSize: "12px", color: "#4b7a4b", marginTop: "6px" });
+  picks.appendChild(text(I18N[lang].picksMade(picksCount, TOTAL_PICKS)));
+  footer.appendChild(picks);
+
+  const req_picks = ALL_MATCHES.length;
   const submitBtn = el("button", {
-    background: picksCount > 0 ? "#166534" : "#1f3a1f",
+    background: picksCount >= req_picks ? "#166534" : "#1f3a1f",
     border: "none",
-    color: picksCount > 0 ? "#bbf7d0" : "#4b7a4b",
+    color: picksCount >= req_picks ? "#bbf7d0" : "#4b7a4b",
     borderRadius: "8px",
     padding: "10px 28px",
-    cursor: picksCount > 0 ? "pointer" : "not-allowed",
+    cursor: picksCount >= req_picks ? "pointer" : "not-allowed",
     fontSize: "14px",
     fontWeight: "700",
     letterSpacing: "0.5px",
