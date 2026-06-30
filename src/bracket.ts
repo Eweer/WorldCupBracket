@@ -351,6 +351,7 @@ function renderHeader(): HTMLElement {
 		letterSpacing: "4px",
 		color: "#4ade80",
 		marginBottom: "6px",
+		paddingTop: "4px",
 		textTransform: "uppercase",
 	});
 	eyebrow.appendChild(text(I18N[lang].eyebrow));
@@ -360,15 +361,12 @@ function renderHeader(): HTMLElement {
 		fontSize: "24px",
 		fontWeight: "800",
 		color: "#f0fdf4",
+		paddingTop: "8px",
 		margin: "0",
 		letterSpacing: "-1px",
 	});
 	h1.appendChild(text(I18N[lang].title));
 	header.appendChild(h1);
-
-	const sub = el("p", { fontSize: "12px", color: "#4b7a4b", marginTop: "6px" });
-	sub.appendChild(text(I18N[lang].subtitle));
-	header.appendChild(sub);
 
 	return header;
 }
@@ -604,7 +602,7 @@ function renderDesktop(root: HTMLElement): void {
 
 	const langBtn = el("button", {
 		position: "absolute",
-		top: "60px",
+		top: "20px",
 		right: "130px",
 		background: "transparent",
 		border: "1px solid #1f3a1f",
@@ -652,10 +650,6 @@ function renderDesktop(root: HTMLElement): void {
 	});
 	h1.appendChild(text(I18N[lang].title));
 	header.appendChild(h1);
-
-	const sub = el("p", { fontSize: "12px", color: "#4b7a4b", marginTop: "6px" });
-	sub.appendChild(text(I18N[lang].subtitle));
-	header.appendChild(sub);
 
 	root.appendChild(header);
 
