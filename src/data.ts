@@ -1,4 +1,5 @@
-import teamDataRaw from '../res/teamsInfo.json'
+import teamDataRaw from '../res/teamsInfo.json' with { type: 'json' };
+import matchInfoRaw from '../res/timetable.json' with { type: 'json' };
 
 // ---------------------------------------------------------------------------
 // Types
@@ -23,9 +24,57 @@ export interface MatchDef {
   label: MatchLabel;
 }
 
+export interface MatchInfo {
+  id: number;
+  dt: Date;
+}
+export interface NewMatchInfo {
+  round: MatchLabel;
+  datetime: Date;
+  teamA: string;
+  teamB: string;
+  scoreA: number | undefined;
+  scoreB: number | undefined;
+  penaltiesA: number | undefined;
+  penaltiesB: number | undefined;
+  location: string;
+  city: string;
+}
+
+type MatchTimetable = Record<number, NewMatchInfo>;
+
+export const MatchesTimetable: MatchTimetable = Object.fromEntries(
+  Object.entries(matchInfoRaw).map(([key, value]) => {
+    const id = Number(key);
+    const match: NewMatchInfo = {
+      ...value,
+      round: value.round as MatchLabel,
+      datetime: new Date(value.datetime),
+      scoreA: value.scoreA !== "-1" ? Number(value.scoreA) : undefined,
+      scoreB: value.scoreB !== "-1" ? Number(value.scoreB) : undefined,
+      penaltiesA: value.penaltiesA !== "-1" ? Number(value.penaltiesA) : undefined,
+      penaltiesB: value.penaltiesB !== "-1" ? Number(value.penaltiesB) : undefined,
+    };
+
+    return [id, match];
+  })
+);
+
+export interface TeamResult_i {
+  team: string;
+  score: number;
+}
+
+export interface MatchResult_i {
+  winner: TeamResult_i;
+  runnerup: TeamResult_i;
+}
+
+export type MatchResults_t = Record<number, MatchResult_i>;
+
 export interface BracketSubmitPayload {
   urlKey: string;
-  winners: Record<number, string>;
+  predictions: Record<number, string>;
 }
 
 // ---------------------------------------------------------------------------
@@ -113,8 +162,8 @@ const SF_SORT_ORDER: number[] = [
   101, 102
 ];
 
-const FINAL: MatchDef = { id: 103, src: [101, 102], label: "FINAL" };
-export const THIRD: MatchDef = { id: 104, src: [101, 102], label: "3RD" };
+export const THIRD: MatchDef = { id: 103, src: [101, 102], label: "3RD" };
+const FINAL: MatchDef = { id: 104, src: [101, 102], label: "FINAL" };
 
 export const ALL_MATCHES: MatchDef[] = [...R16, ...R8, ...R4, ...SF, FINAL, THIRD];
 
@@ -167,7 +216,7 @@ export const I18N = {
     eyebrow: "FIFA",
     title: "World Cup Bracket",
     subtitle: `Click the winner team for each match`,
-    matchNumber: (id: number) => `Match ${id}`,
+    matchNumber: (id: number) => `[${id}]`,
     thirdPlace: "3rd Place Match",
     final: "⚽ Final",
     semifinal: "Semi-finals",
@@ -188,7 +237,7 @@ export const I18N = {
     eyebrow: "FIFA",
     title: "Bracket del Mundial",
     subtitle: `Haz clic en el equipo ganador de cada partido`,
-    matchNumber: (id: number) => `Partido ${id}`,
+    matchNumber: (id: number) => `[${id}]`,
     thirdPlace: "Partido por el 3er puesto",
     final: "⚽ Final",
     semifinal: "Semifinales",
