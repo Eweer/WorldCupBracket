@@ -38,14 +38,14 @@
     "75": {
         "datetime": "2026-06-30T01:00+00:00",
         "teamA": "NED",
-        "scoreA": "-1",
+        "scoreA": "1",
         "teamB": "MAR",
-        "scoreB": "-1",
+        "scoreB": "1",
         "round": "R16",
         "location": "Monterrey Stadium",
         "city": "Monterrey",
-        "penaltiesA": "-1",
-        "penaltiesB": "-1"
+        "penaltiesA": "2",
+        "penaltiesB": "3"
     },
     "78": {
         "datetime": "2026-06-30T17:00+00:00",
@@ -195,7 +195,7 @@
         "datetime": "2026-07-04T17:00+00:00",
         "teamA": "CAN",
         "scoreA": "-1",
-        "teamB": "W75",
+        "teamB": "MAR",
         "scoreB": "-1",
         "round": "R8",
         "location": "Houston Stadium",
