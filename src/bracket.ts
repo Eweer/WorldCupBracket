@@ -1,5 +1,4 @@
 import {
-	ALL_MATCHES,
 	BracketSubmitPayload,
 	COL_VPAD,
 	MAPPED_MATCHES,
@@ -10,12 +9,26 @@ import {
 	MatchesTimetable,
 	MatchResults_t,
 	NewMatchInfo,
+	fetchPredictions,
 } from "./data.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
+const p_uuid = getUuidFromLink();
+let oldPredictions: Record<number, string> = {};
+try {
+	if (p_uuid) {
+		const response = await fetchPredictions(p_uuid);
+		for (const [key, value] of Object.entries(response)) {
+			oldPredictions[Number(key)] = value;
+		}
+	}
+} catch (err) {
+	console.error("Failed to load predictions", err);
+}
+(window as any).oldPredictions = oldPredictions;
 function isPlaceholder(name: string): boolean {
 	return name.startsWith("#")
 		|| name.startsWith("TBD")
@@ -80,8 +93,19 @@ function getWinner(match: NewMatchInfo): string | undefined {
 	return match.teamB;
 }
 
-function buildPayload(predictions: MatchResults_t): BracketSubmitPayload {
+export function getUuidFromLink(): string | undefined {
 	const urlKey = window.location.pathname.split("/").filter(Boolean).pop() ?? "";
+	if (urlKey === "" || urlKey === "WorldCupBracket") {
+		return undefined;
+	}
+	return urlKey;
+}
+
+function buildPayload(predictions: MatchResults_t): BracketSubmitPayload | undefined {
+	const urlKey = getUuidFromLink();
+	if (urlKey === undefined) {
+		return undefined;
+	}
 	let winners: Record<number, string> = {};
 	for (const [id, info] of Object.entries(predictions)) {
 		winners[Number(id)] = info.winner.team;
@@ -207,8 +231,20 @@ function renderCard(match: MatchDef, compact: boolean = false): HTMLElement {
 	// Team rows
 	for (const team of [teamA, teamB]) {
 		const isWinner = winner === team;
+		const predictionExists = hasBeenPlayed && match.id in oldPredictions;
+		const isTeamPredicted = predictionExists && oldPredictions[match.id] === team;
+		const isFailedPrediction = isTeamPredicted && !isWinner;
+		const isCorrectPrediction = isTeamPredicted && isWinner;
+		let bg = "transparent";
+		if (predictionExists) {
+			if (isCorrectPrediction) bg = "#14532d";
+			else if (isFailedPrediction) bg = "#521614";
+			else if (isWinner) bg = "#464646";
+		} else if (isWinner) {
+			bg = "#14532d";
+		}
 		const row = el("button", {
-			background: isWinner ? "#14532d" : "transparent",
+			background: bg,
 			border: "none",
 			color: isPlaceholder(team) ? "#4b7a4b" : "#d1fae5",
 			borderRadius: "4px",
@@ -257,9 +293,22 @@ function renderCard(match: MatchDef, compact: boolean = false): HTMLElement {
 				render();
 			});
 		}
-
-		if (isWinner) {
-			const arrow = el("span", { color: "#4ade80", fontSize: "10px" });
+		if (predictionExists) {
+			if (isCorrectPrediction) {
+				const arrow = el("span", { color: "#4ade4a", fontSize: "14px" });
+				arrow.appendChild(text("✔"));
+				row.appendChild(arrow);
+			} else if (isFailedPrediction) {
+				const arrow = el("span", { color: "#de4f4a", fontSize: "14px" });
+				arrow.appendChild(text("✘"));
+				row.appendChild(arrow);
+			} else if (isWinner) {
+				const arrow = el("span", { color: "#636363", fontSize: "14px" });
+				arrow.appendChild(text("▶"));
+				row.appendChild(arrow);
+			}
+		} else if (isWinner) {
+			const arrow = el("span", { color: "#4ade80", fontSize: "14px" });
 			arrow.appendChild(text("▶"));
 			row.appendChild(arrow);
 		}
@@ -409,7 +458,9 @@ function renderFooter(picksCount: number): HTMLElement {
 	submitBtn.disabled = picksCount === 0;
 	submitBtn.addEventListener("click", () => {
 		if (onSubmitCallback) {
-			onSubmitCallback(buildPayload(predictions));
+			const payload = buildPayload(predictions);
+			if (payload === undefined) return;
+			onSubmitCallback(payload);
 		}
 	});
 	footer.appendChild(submitBtn);
@@ -752,7 +803,11 @@ function renderDesktop(root: HTMLElement): void {
 	submitBtn.appendChild(text(I18N[lang].submit));
 	submitBtn.disabled = picksCount === 0;
 	submitBtn.addEventListener("click", () => {
-		if (onSubmitCallback) onSubmitCallback(buildPayload(predictions));
+		if (onSubmitCallback) {
+			const payload = buildPayload(predictions);
+			if (payload === undefined) return;
+			onSubmitCallback(payload);
+		}
 	});
 	footer.appendChild(submitBtn);
 

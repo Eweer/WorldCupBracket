@@ -1,12 +1,13 @@
 import { mountBracket, lang } from "./bracket.js";
-import { I18N, type BracketSubmitPayload } from "./data.js";
+import { I18N, type BracketSubmitPayload, WORKER_URL } from "./data.js";
 
-const WORKER_URL = "https://broad-surf-ce0e.eweer.workers.dev"
 
 const app = document.getElementById("app");
+
 if (!app) {
   throw new Error("#app element not found");
 }
+
 
 mountBracket(app, async (payload: BracketSubmitPayload) => {
   try {

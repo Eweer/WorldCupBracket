@@ -1,9 +1,11 @@
-import teamDataRaw from '../res/teamsInfo.json' with { type: 'json' };
-import matchInfoRaw from '../res/timetable.json' with { type: 'json' };
+import teamDataRaw from './res/teamsInfo.json' with { type: 'json' };
+import matchInfoRaw from './res/timetable.json' with { type: 'json' };
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+
+export const WORKER_URL = "https://broad-surf-ce0e.eweer.workers.dev"
 
 export interface TeamTranslations {
   en_US: string;
@@ -75,6 +77,32 @@ export type MatchResults_t = Record<number, MatchResult_i>;
 export interface BracketSubmitPayload {
   urlKey: string;
   predictions: Record<number, string>;
+}
+
+interface PredictionsResponse {
+  urlKey: string;
+  predictions: string;
+}
+
+interface ErrorResponse {
+  error: string;
+}
+
+export async function fetchPredictions(uuid: string): Promise<Record<string, string>> {
+  const response = await fetch(`${WORKER_URL}/?uuid=${encodeURIComponent(uuid)}`);
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+
+  const data: PredictionsResponse | ErrorResponse = await response.json();
+
+  if ("error" in data) {
+    throw new Error(data.error);
+  }
+  if (data.urlKey !== uuid) {
+    throw new Error("Sent/Received uuid missmatch.")
+  }
+  return JSON.parse(data.predictions);
 }
 
 // ---------------------------------------------------------------------------

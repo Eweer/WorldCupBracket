@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<script>
-  const redirect = sessionStorage.getItem("redirect");
-  if (redirect) {
-    sessionStorage.removeItem("redirect");
-    history.replaceState(null, "", redirect);
-  }
-</script>
 <html lang="en">
 
 <head>
+  <script>
+    const redirect = sessionStorage.getItem("redirect");
+    if (redirect) {
+      sessionStorage.removeItem("redirect");
+      history.replaceState(null, "", redirect);
+    }
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>World Cup Bracket</title>
