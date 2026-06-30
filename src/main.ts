@@ -5,23 +5,23 @@ import { I18N, type BracketSubmitPayload, WORKER_URL } from "./data.js";
 const app = document.getElementById("app");
 
 if (!app) {
-  throw new Error("#app element not found");
+	throw new Error("#app element not found");
 }
 
 
 mountBracket(app, async (payload: BracketSubmitPayload) => {
-  try {
-    const response = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(payload),
-      mode: "no-cors",
-      redirect: "follow"
-    });
-    alert(I18N[lang].submitSuccess);
-  } catch (err) {
-    alert(I18N[lang].submitFailure)
-    console.log(err)
-  }
-  console.log("Bracket submitted:", payload);
+	try {
+		const response = await fetch(WORKER_URL, {
+			method: "POST",
+			headers: { "Content-Type": "text/plain" },
+			body: JSON.stringify(payload),
+			mode: "no-cors",
+			redirect: "follow"
+		});
+		alert(I18N[lang].submitSuccess);
+	} catch (err) {
+		alert(I18N[lang].submitFailure)
+		console.log(err)
+	}
+	console.log("Bracket submitted:", payload);
 });
